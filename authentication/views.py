@@ -1,15 +1,35 @@
-import hashlib
-
 from django.db import IntegrityError
 from django.http import HttpResponseRedirect
 from django.shortcuts import render
 from django.urls import reverse
 
 from .models import User
+from .utils import util
 from .utils import validate
 
 
 def login(request):
+    if request.method == "POST":
+        email = request.POST["email"]
+        password = request.POST["password"]
+
+        context = {"error": None}
+
+        # hash the password
+        password = util.hash_password(password)
+
+        # attempt to find the user
+        try:
+            user = User.objects.get(email=email, password=password)
+            user_token = user.id
+            redirect_url = reverse("login")
+            response = HttpResponseRedirect(redirect_url)
+            util.set_cookie("_access_token", user_token, response)
+            return response
+        except User.DoesNotExist:
+            context["error"] = "Invalid Email or Password"
+            return render(request, "authentication/login.html", context)
+
     return render(request, "authentication/login.html")
 
 
@@ -20,44 +40,44 @@ def registration(request):
         email = request.POST["email"]
         password = request.POST["password"]
 
+        context = {
+            "error": None,
+            "first_name": first_name,
+            "last_name": last_name,
+            "email": email
+        }
+
         # perform server side validation and sanitization
         if not validate.validate_name(first_name) or not validate.validate_name(last_name) or not validate.validate_email(email) or not validate.validate_password(password):
-            return render(request, "authentication/registration.html", {
-                "error": "One or more fields is invalid. Check and try again",
-                "first_name": first_name,
-                "last_name": last_name,
-                "email": email
-            })
+            context["error"] = "One or more fields is invalid. Check and try again"
+            return render(request, "authentication/registration.html", context)
 
         # check to make sure another user does not exist with same email
         users = User.objects.filter(email=email)
         if len(users) > 0:
-            return render(request, "authentication/registration.html", {
-                "error": "A user already exist with the email",
-                "first_name": first_name,
-                "last_name": last_name,
-                "email": email
-            })
+            context["error"] = "A user already exist with the email"
+            return render(request, "authentication/registration.html", context)
 
         # persist new user to database
         try:
             # hash the user password
-            password = hashlib.sha224(bytes(password, "utf8")).hexdigest()
+            password = util.hash_password(password)
             new_user = User.objects.create(first_name=first_name, last_name=last_name, email=email, password=password)
             user_token = new_user.id
             redirect_url = reverse("login")
-            salt = "90bed65b7fb6e1129b4de3309c7c1938b6274744cc8a7527a6"
             response = HttpResponseRedirect(redirect_url)
-            response.set_signed_cookie(key="_user_token", value=user_token, salt=salt, max_age=60, expires=None, path="/", domain=None, secure=False, httponly=True, samesite="Strict")
+            util.set_cookie("_access_token", user_token, response)
             return response
         except IntegrityError:
-            return render(request, "authentication/registration.html", {
-                "error": "Unable to create an account. Please try again later.",
-                "first_name": first_name,
-                "last_name": last_name,
-                "email": email
-            })
+            context["error"] = "Unable to create an account at the moment. Try again later"
+            return render(request, "authentication/registration.html", context)
 
-    return render(request, "authentication/registration.html", {
-        "error": None,
-    })
+    return render(request, "authentication/registration.html", {"error": None})
+
+
+def logout(request):
+    if request.method == "GET":
+        redirect_url = reverse("login")
+        response = HttpResponseRedirect(redirect_url)
+        response.delete_cookie(key="_access_token", path="/", domain=None, samesite="strict")
+        return response

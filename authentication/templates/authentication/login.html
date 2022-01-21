@@ -6,19 +6,21 @@
 
 <div class="container mt-5" style="width: 800px;">
     <h1 class="text-center text-dark display-2">Life Storage</h1>
-    <div class="alert alert-danger alert-dismissible fade show invisible" role="alert">
-        <strong>Something went wrong!</strong> Invalid Email or Password.
+    {% if error %}
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        <strong>Something went wrong!</strong> {{error}}
         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
     </div>
+    {% endif %}
     <form action="" method="POST">
         {% csrf_token %}
       <div class="mb-3">
         <label for="email" class="form-label">Email address</label>
-        <input type="email" class="form-control" id="email" aria-describedby="emailHelp">
+        <input type="email" name="email" class="form-control" id="email" aria-describedby="emailHelp">
       </div>
       <div class="mb-3">
         <label for="password" class="form-label">Password</label>
-        <input type="password" class="form-control" id="password">
+        <input type="password" name="password" class="form-control" id="password">
       </div>
       <div class="mb-3 form-check">
         <input type="checkbox" class="form-check-input" id="remember_me">
