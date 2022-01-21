@@ -1,10 +1,78 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
+{% extends "base.html" %}
 
-</body>
-</html>
+{% block title %} Login | Life Storage {% endblock %}
+
+{% block content %}
+
+<div class="container mt-5" style="width: 800px;">
+    <h1 class="display-2">Welcome To Life Storage</h1>
+    <p class="lead text-center">Backup you <b>Images</b>, <b>Videos</b>, <b>Audios</b>, and Regular files for life</p>
+    {% if error %}
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        <strong>Something went wrong!</strong> {{error}}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+    {% endif %}
+    <form class="row g-3 needs-validation" novalidate action="" method="POST">
+      {% csrf_token %}
+      <div class="col-md-6">
+        <label for="first_name" class="form-label">First Name</label>
+        <input type="text" name="first_name" value="{{first_name}}" class="form-control" id="first_name" placeholder="Mary" maxlength="20" minlength="2" pattern="[A-Za-z]+" required>
+        <div class="valid-feedback">Looks good!</div>
+        <div class="invalid-feedback">Please provide a valid first name.</div>
+      </div>
+      <div class="col-md-6">
+        <label for="last_name" class="form-label">Last Name</label>
+        <input type="text" name="last_name" value="{{last_name}}" class="form-control" id="last_name" placeholder="Smith" maxlength="20" minlength="2" pattern="[A-Za-z]+" required>
+        <div class="valid-feedback">Looks good!</div>
+        <div class="invalid-feedback">Please provide a valid last name.</div>
+      </div>
+      <div class="col-12">
+        <label for="email" class="form-label">Email Address</label>
+        <input type="email" name="email" value="{{email}}" class="form-control" id="email" placeholder="mary_smith@gmail.com" required>
+        <div id="emailHelp" class="form-text">We'll never share your email with anyone else.</div>
+        <div class="valid-feedback">Looks good!</div>
+        <div class="invalid-feedback">Please provide a valid email address.</div>
+      </div>
+      <div class="col-12">
+        <label for="password" class="form-label">Password</label>
+        <input type="password" name="password" class="form-control" id="password" required minlength="8" maxlength="20" pattern="[A-Za-z0-9]{8,20}">
+        <div id="passwordHelpBlock" class="form-text">
+          Your password must be 8-20 characters long, contain letters and numbers, and must not contain spaces, special characters, or emoji.
+        </div>
+        <div class="valid-feedback">Looks good!</div>
+        <div class="invalid-feedback">Please provide a valid password.</div>
+      </div>
+      <div class="d-grid gap-2">
+          <button class="btn btn-primary" type="submit">Create Account</button>
+     </div>
+    </form>
+
+    <div class="container mt-5">
+        <p class="text-center lead">Do you already have an account?  <a href="{% url 'login' %}" class="link-primary">Login here</a></p>
+    </div>
+</div>
+
+<script>
+// Example starter JavaScript for disabling form submissions if there are invalid fields
+(function () {
+  'use strict'
+
+  // Fetch all the forms we want to apply custom Bootstrap validation styles to
+  const forms = document.querySelectorAll('.needs-validation')
+
+  // Loop over them and prevent submission
+  Array.prototype.slice.call(forms)
+    .forEach(function (form) {
+      form.addEventListener('submit', function (event) {
+        if (!form.checkValidity()) {
+          event.preventDefault()
+          event.stopPropagation()
+        }
+
+        form.classList.add('was-validated')
+      }, false)
+    })
+})()
+</script>
+{% endblock %}

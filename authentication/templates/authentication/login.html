@@ -4,34 +4,34 @@
 
 {% block content %}
 
-    <div class="container mt-5" style="width: 800px;">
-        <h1 class="text-center text-dark display-2">Life Storage</h1>
-        <div class="alert alert-danger alert-dismissible fade show invisible" role="alert">
-            <strong>Something went wrong!</strong> Invalid Email or Password.
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-        </div>
-        <form action="" method="POST">
-            {% csrf_token %}
-          <div class="mb-3">
-            <label for="email" class="form-label">Email address</label>
-            <input type="email" class="form-control" id="email" aria-describedby="emailHelp">
-          </div>
-          <div class="mb-3">
-            <label for="password" class="form-label">Password</label>
-            <input type="password" class="form-control" id="password">
-          </div>
-          <div class="mb-3 form-check">
-            <input type="checkbox" class="form-check-input" id="remember_me">
-            <label class="form-check-label" for="remember_me">Remember me</label>
-          </div>
-          <div class="d-grid gap-2">
-              <button class="btn btn-primary" type="submit">Login</button>
-         </div>
-        </form>
-
-        <div class="container mt-5">
-            <p class="text-center lead">You don't have an account?  <a href="#" class="link-primary">Create account</a></p>
-        </div>
+<div class="container mt-5" style="width: 800px;">
+    <h1 class="text-center text-dark display-2">Life Storage</h1>
+    <div class="alert alert-danger alert-dismissible fade show invisible" role="alert">
+        <strong>Something went wrong!</strong> Invalid Email or Password.
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
     </div>
+    <form action="" method="POST">
+        {% csrf_token %}
+      <div class="mb-3">
+        <label for="email" class="form-label">Email address</label>
+        <input type="email" class="form-control" id="email" aria-describedby="emailHelp">
+      </div>
+      <div class="mb-3">
+        <label for="password" class="form-label">Password</label>
+        <input type="password" class="form-control" id="password">
+      </div>
+      <div class="mb-3 form-check">
+        <input type="checkbox" class="form-check-input" id="remember_me">
+        <label class="form-check-label" for="remember_me">Remember me</label>
+      </div>
+      <div class="d-grid gap-2">
+          <button class="btn btn-primary" type="submit">Login</button>
+     </div>
+    </form>
+
+    <div class="container mt-5">
+        <p class="text-center lead">You don't have an account?  <a href="{% url 'registration' %}" class="link-primary">Create account</a></p>
+    </div>
+</div>
 
 {% endblock %}
