@@ -6,26 +6,8 @@
 
   {% include "main/partial/header.html" %}
 
-
-  <div class="container d-flex flex-wrap justify-content-start gap-3 p-2 bd-highlight">
-  <div class="card" style="width: 18rem;">
-    <div class="card-body">
-      <h5 class="card-title">Card title</h5>
-      <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-    </div>
-    <ul class="list-group list-group-flush">
-      <div class="card-header">Media Details</div>
-      <li class="list-group-item">24KB</li>
-      <li class="list-group-item">PNG</li>
-      <li class="list-group-item">34 Downloads</li>
-      <li class="list-group-item">Upload on 11/20/2022</li>
-    </ul>
-    <div class="card-body">
-      <button type="button" class="btn btn-primary">Download</button>
-      <button type="button" class="btn btn-danger">Remove</button>
-    </div>
-  </div>
-
-  </div>
+<div class="container d-flex flex-wrap justify-content-start gap-3 p-2 bd-highlight">
+  {% include "main/partial/card.html" %}
+</div>
 
 {% endblock %}

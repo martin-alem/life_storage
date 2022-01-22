@@ -21,8 +21,8 @@ def is_logged_in(request):
     return user_id
 
 
-def fetch_all(model, category):
-    media = model.objects.filter(category=category)
+def fetch_all(model, category, user):
+    media = model.objects.filter(category=category, user=user)
     if len(media) > 0:
         return media
     return []

@@ -23,18 +23,138 @@
   </div>
   <hr />
 
-<div class="container">
-  <div class="row">
-    <div class="col-sm-9">
-      <form action="" method="GET" class="mb-5">
-        <input type="search" id="search" class="form-control rounded-pill" name="search" placeholder="Search" />
-      </form>
-    </div>
-    <div class="col-sm-3">
-      <div class="d-grid gap-2 col-6 mx-auto">
-        <button class="btn btn-primary" type="button">Upload media</button>
+  <div class="container">
+    <div class="row">
+      <div class="col-sm-9">
+        <form action="{% url 'search' %}" method="GET" class="mb-5">
+          {% csrf_token %}
+          <input type="search" id="search" value="{{query}}" class="form-control rounded-pill" name="search" placeholder="Search" />
+        </form>
+      </div>
+      <div class="col-sm-3">
+        <div class="d-grid gap-2 col-6 mx-auto">
+          <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">Upload media</button>
+        </div>
       </div>
     </div>
   </div>
 </div>
+
+<!-- Modal -->
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Life Storage Upload</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <form action="" method="POST" enctype="multipart/form-data" novalidate class="needs-validation">
+        <div class="modal-body">
+          <div class="alert alert-danger alert-dismissible fade d-none" id="size-error" role="alert">
+            <strong>Oops!</strong> You have exceeded the file upload limit of 4GB.
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+          </div>
+          {% csrf_token %}
+          <div class="input-group mb-3">
+            <input type="file" class="form-control" id="media" required />
+            <div class="invalid-feedback">Please select the files to upload</div>
+          </div>
+
+          <div class="input-group">
+            <span class="input-group-text">Description</span>
+            <textarea class="form-control" id="media_description" aria-label="Description" required></textarea>
+            <div class="invalid-feedback">Please provide some description.</div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+          <button type="submit" class="btn btn-primary">Save changes</button>
+        </div>
+      </form>
+    </div>
+  </div>
 </div>
+
+<script>
+  // Example starter JavaScript for disabling form submissions if there are invalid fields
+  (function () {
+    "use strict";
+
+    // Fetch all the forms we want to apply custom Bootstrap validation styles to
+    const url = "https://api.cloudinary.com/v1_1/doawxzh8i/auto/upload";
+    const forms = document.querySelectorAll(".needs-validation");
+    const sizeError = document.querySelector("#size-error");
+    const csrfToken = document.querySelector("input[type='hidden']");
+
+    // Loop over them and prevent submission
+    Array.prototype.slice.call(forms).forEach(form => {
+      form.addEventListener(
+        "submit",
+        async event => {
+          if (!form.checkValidity()) {
+            event.preventDefault();
+            event.stopPropagation();
+          }
+
+          const mediaDescription = document.querySelector("#media_description");
+          const media = document.querySelector("#media");
+          if (mediaDescription.value != "" && media.files.length > 0) {
+            const description = mediaDescription.value;
+            const { size, type } = media.files[0];
+            const formData = new FormData();
+            if (checkUploadSize(size)) {
+              sizeError.classList.remove("d-none");
+              sizeError.classList.add("show");
+            } else {
+              formData.append("file", media.files[0]);
+              formData.append("upload_preset", "life-storage-media");
+              fetch(url, { method: "POST", body: formData })
+                .then(response => response.json())
+                .then(data => {
+                  submitForm(data, description, csrfToken);
+                });
+            }
+          }
+          form.classList.add("was-validated");
+          event.preventDefault();
+        },
+        false
+      );
+    });
+  })();
+
+  function checkUploadSize(sizeInBytes) {
+    return sizeInBytes > 4e9;
+  }
+
+  function determineMediaCategory(mediaType) {
+    switch (mediaType) {
+      case "image":
+        return "IMG";
+      case "video":
+        return "VID";
+      case "audio":
+        return "AUD";
+      default:
+        return "FIL";
+    }
+  }
+
+  function submitForm(uploadInfo, description, csrfToken) {
+    const url = "http://localhost:8000/home/upload";
+    const formData = new FormData();
+    formData.append("csrfmiddlewaretoken", csrfToken.value)
+    formData.append("name", uploadInfo.original_filename);
+    formData.append("description", description);
+    formData.append("size", uploadInfo.bytes);
+    formData.append("type", uploadInfo.format);
+    formData.append("media_url", uploadInfo.secure_url);
+    formData.append("category", determineMediaCategory(uploadInfo.resource_type));
+
+    fetch(url, { method: "POST", body: formData }).then(response => {
+      if (response.ok) {
+        window.location.reload();
+      }
+    });
+  }
+</script>

@@ -1,0 +1,26 @@
+
+{% for media in medias %}
+
+
+  <div class="card" style="width: 18rem;">
+    {% if media.category == "IMG" %}
+      <img src="{{media.media_url}}" class="card-img-top" alt="{{media.name}}">
+    {% endif %}
+    <div class="card-body">
+      <h5 class="card-title">{{media.name | title }}</h5>
+      <p class="card-text">{{media.description}}</p>
+    </div>
+    <ul class="list-group list-group-flush">
+      <div class="card-header h6">Media Details</div>
+      <li class="list-group-item">{{media.size}} B</li>
+      <li class="list-group-item">{{media.type}}</li>
+      <li class="list-group-item">{{media.downloads}} Downloads</li>
+      <li class="list-group-item">Upload on {{media.created_at}}</li>
+    </ul>
+    <div class="card-body">
+      <a href="{{media.media_url}}" class="btn btn-outline-primary btn-sm" target="_blank">Download</a>
+    </div>
+  </div>
+
+
+{% endfor %}
