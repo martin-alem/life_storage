@@ -20,4 +20,4 @@ def set_cookie(key, value, response):
         :return None
     """
     salt = "90bed65b7fb6e1129b4de3309c7c1938b6274744cc8a7527a6"
-    response.set_signed_cookie(key="_user_token", value=value, salt=salt, max_age=60, expires=None, path="/", domain=None, secure=False, httponly=True, samesite="Strict")
+    response.set_signed_cookie(key=key, value=value, salt=salt, max_age=3600, expires=None, path="/", domain=None, secure=False, httponly=True, samesite="Strict")

@@ -4,8 +4,7 @@ from django.shortcuts import render
 from django.urls import reverse
 
 from .models import User
-from .utils import util
-from .utils import validate
+from .utils import validate, util
 
 
 def login(request):
@@ -22,7 +21,7 @@ def login(request):
         try:
             user = User.objects.get(email=email, password=password)
             user_token = user.id
-            redirect_url = reverse("login")
+            redirect_url = reverse("home")
             response = HttpResponseRedirect(redirect_url)
             util.set_cookie("_access_token", user_token, response)
             return response
@@ -64,7 +63,7 @@ def registration(request):
             password = util.hash_password(password)
             new_user = User.objects.create(first_name=first_name, last_name=last_name, email=email, password=password)
             user_token = new_user.id
-            redirect_url = reverse("login")
+            redirect_url = reverse("home")
             response = HttpResponseRedirect(redirect_url)
             util.set_cookie("_access_token", user_token, response)
             return response
@@ -73,11 +72,3 @@ def registration(request):
             return render(request, "authentication/registration.html", context)
 
     return render(request, "authentication/registration.html", {"error": None})
-
-
-def logout(request):
-    if request.method == "GET":
-        redirect_url = reverse("login")
-        response = HttpResponseRedirect(redirect_url)
-        response.delete_cookie(key="_access_token", path="/", domain=None, samesite="strict")
-        return response

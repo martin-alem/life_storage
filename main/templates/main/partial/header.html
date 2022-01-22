@@ -1,0 +1,40 @@
+<div class="contain-fluid">
+  <nav class="navbar navbar-expand-lg navbar-light bg-primary">
+    <div class="container-fluid">
+      <a class="navbar-brand text-white" href="{% url 'home' %}">Life Storage</a>
+    </div>
+  </nav>
+
+  <div class="container">
+    <h1 class="display-4 text-end">Welcome {{user.first_name}}</h1>
+    <nav class="navbar navbar-expand-lg">
+      <div class="container-fluid">
+        <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+          <div class="navbar-nav container">
+            <a class="nav-link active text-dark h5" aria-current="page" href="{% url 'image'%}">Images</a>
+            <a class="nav-link text-dark h5" href="{% url 'video'%}">Videos</a>
+            <a class="nav-link text-dark h5" href="{% url 'audio'%}">Audios</a>
+            <a class="nav-link text-dark h5" href="{% url 'file'%}">Files</a>
+          </div>
+          <a class="nav-link text-end text-dark h5" href="{% url 'logout'%}">Logout</a>
+        </div>
+      </div>
+    </nav>
+  </div>
+  <hr />
+
+<div class="container">
+  <div class="row">
+    <div class="col-sm-9">
+      <form action="" method="GET" class="mb-5">
+        <input type="search" id="search" class="form-control rounded-pill" name="search" placeholder="Search" />
+      </form>
+    </div>
+    <div class="col-sm-3">
+      <div class="d-grid gap-2 col-6 mx-auto">
+        <button class="btn btn-primary" type="button">Upload media</button>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
